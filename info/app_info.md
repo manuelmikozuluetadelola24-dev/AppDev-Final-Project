@@ -23,13 +23,13 @@
 
 ### LOGIN FEATURE
 
--   Login screen or window
+-   Login page separate from todo list page
 -   Required login credentials will only consist of username and password.
 -   During user registration, check if a username is taken.
 
 ### TASK FEATURE
 
--   Upon login, display list of tasks.
+-   Upon login, switch to todo list page
 -   Tasks will consist of a title, description, priority, date created, and expiration date.
 -   Task priority can be set to low, medium, and high.
 
@@ -38,6 +38,11 @@
 **Frontend**: Ace, MJ
 **Backend**: Miko
 
+### OBJECTIVES
+
+**Frontend**: Build website and user interface
+**Backend**: Handle fetch API and database API
+
 ### IMPORTANT LINKS
 
-**Github Repo**:  
+**Github Repo**: https://github.com/manuelmikozuluetadelola24-dev/AppDev-Final-Project.git
