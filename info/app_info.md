@@ -19,7 +19,7 @@
 
 -   Node.js
 -   Express.js
--   Postgresql or MongoDB
+-   Postgresql 
 
 ### LOGIN FEATURE
 
