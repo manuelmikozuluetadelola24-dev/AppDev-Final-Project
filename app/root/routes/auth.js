@@ -16,9 +16,9 @@ router.post('/user/register', async (req, res) => {
 
 	if(username == result)
 	{
-		return res.status(400).json(
+		return res.status(400).json({
 			"message": "username already exists"
-		);
+		});
 	}
 
 	return await db.query(`

@@ -1,6 +1,5 @@
-require('dotenv').config();
-const jwt = require('../Libraries/Jwt')
-const db = require('../Libraries/Database')
+const jwt = require('../user/jwt/jwt')
+const db = require('../database/db')
 
 module.exports = async (req, res, next) => {
 	let token = req.headers.authorization || req.headers.Authorization;

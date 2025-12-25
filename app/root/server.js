@@ -1,8 +1,8 @@
 const express = require('express');
-const apiRoute = require('/routes/api_new');
-const authRoute = require('/routes/auth');
-const middleware = require('/middleware/auth_middleware');
-const migrateRoute = require('/routes/migrate');
+const apiRoute = require('./routes/api_new');
+const authRoute = require('./routes/auth');
+const middleware = require('./middleware/auth_middleware');
+const migrateRoute = require('./routes/migrate');
 const app = express();
 const port = process.env.PORT || 3000;
 
