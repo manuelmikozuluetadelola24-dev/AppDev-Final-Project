@@ -14,11 +14,14 @@ app.use('/api', middleware, apiRoute);
 app.use('/auth', authRoute);
 app.use('/migrate', migrateRoute);
 
-app.get('/', (res, req) => {
-	res.send('ok');
+app.get('/', (err, res, req, next) => {
+	res.status(200).json({
+		"statusCode": 200,
+		"message": "okay"
+	});
 })
 
-app.use((req, res, next) => {
+app.use((err, req, res, next) => {
 	res.status(404).json({
 		"statusCode": 404,
 		"message": "endpoint not found"
