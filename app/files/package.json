@@ -1,7 +1,7 @@
 {
-  "name": "todo-app-external-db",
+  "name": "todo-app",
   "version": "1.0.0",
-  "description": "To-do list application connecting to external PostgreSQL database",
+  "description": "To-do list application with Express.js, Node.js, and PostgreSQL",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

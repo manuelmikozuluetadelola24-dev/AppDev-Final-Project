@@ -18,18 +18,27 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
+// Test database connection
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Database connection error:', err);
+  } else {
+    console.log('Connected to PostgreSQL database');
+  }
+});
+
 // Make pool available to routes
 app.locals.pool = pool;
 
-// Import routes - folder structure matches mount points
-const authRoutes = require('./api/auth');
-const taskRoutes = require('./api/tasks');
+// Import routes
+const authRoutes = require('./routes/auth');
+const taskRoutes = require('./routes/tasks');
 
-// Mount routes at paths matching folder structure
+// Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Serve index.html for root route
+// Serve index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -37,7 +46,6 @@ app.get('/', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  console.log('Connecting to external PostgreSQL database...');
 });
 
 // Graceful shutdown

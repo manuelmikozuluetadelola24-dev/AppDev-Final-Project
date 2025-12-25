@@ -1,9 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../middleware/auth');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
 
 // POST /api/auth/register - Register new user
 router.post('/register', async (req, res) => {
@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user into external database
+    // Insert user into external database (users table)
     const result = await pool.query(
       'INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING id, username, created_at',
       [username, hashedPassword]

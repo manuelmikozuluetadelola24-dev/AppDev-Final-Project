@@ -44,7 +44,7 @@ function showMessage(element, message, type) {
     }, 5000);
 }
 
-// Registration - POST to /api/auth/register
+// Registration
 registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -73,7 +73,7 @@ registerForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Login - POST to /api/auth/login
+// Login
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -118,7 +118,7 @@ logoutBtn.addEventListener('click', () => {
     tasksList.innerHTML = '<div class="no-tasks">No tasks yet. Add your first task!</div>';
 });
 
-// Add Task - POST to /api/tasks
+// Add Task
 taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -156,7 +156,7 @@ taskForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Load Tasks - GET from /api/tasks
+// Load Tasks
 async function loadTasks() {
     try {
         const response = await fetch('/api/tasks', {
@@ -202,7 +202,7 @@ function displayTasks(tasks) {
     `).join('');
 }
 
-// Delete Task - DELETE to /api/tasks/:id
+// Delete Task
 async function deleteTask(taskId) {
     if (!confirm('Are you sure you want to delete this task?')) {
         return;
@@ -229,7 +229,7 @@ async function deleteTask(taskId) {
     }
 }
 
-// Edit Task - PUT to /api/tasks/:id
+// Edit Task
 async function editTask(taskId) {
     const title = prompt('Enter new title:');
     if (!title) return;

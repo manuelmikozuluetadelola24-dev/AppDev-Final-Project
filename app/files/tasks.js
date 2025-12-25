@@ -1,26 +1,7 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
+const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_change_in_production';
-
-// JWT Authentication Middleware
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-  if (!token) {
-    return res.status(401).json({ message: 'Access token required' });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-    req.user = user;
-    next();
-  });
-};
 
 // GET /api/tasks - Get all tasks for authenticated user
 router.get('/', authenticateToken, async (req, res) => {
@@ -59,7 +40,7 @@ router.post('/', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Priority must be low, medium, or high' });
     }
 
-    // Insert task into external database
+    // Insert task into external database (tasks table)
     const result = await pool.query(
       'INSERT INTO tasks (title, description, expiration_date, priority, user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *',
       [title, description || null, expiration_date || null, priority, req.user.userId]
@@ -79,7 +60,7 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// PUT /api/tasks/:id - Update task
+// PUT /api/tasks/:id - Edit/Update task
 router.put('/:id', authenticateToken, async (req, res) => {
   const pool = req.app.locals.pool;
   

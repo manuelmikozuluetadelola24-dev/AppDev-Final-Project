@@ -1,53 +1,49 @@
 # To-Do List Web Application
 
-A full-stack to-do list application that connects to an external PostgreSQL database. Built with Express.js, Node.js, and PostgreSQL with JWT authentication.
-
-## Project Structure
-
-**Folder structure matches API mount points:**
-
-```
-todo-app/
-├── server.js              # Main Express server
-├── package.json           # Dependencies
-├── api/                   # API routes (folder structure matches mount points)
-│   ├── auth/             # → Mounted at /api/auth
-│   │   └── index.js      # Registration & Login routes
-│   └── tasks/            # → Mounted at /api/tasks
-│       └── index.js      # Task CRUD routes
-└── public/               # Static frontend files
-    ├── index.html        # Frontend HTML
-    └── app.js            # Frontend JavaScript
-```
-
-### Mount Point Architecture
-
-The application uses a clean architecture where folder paths directly match API endpoints:
-
-| Folder Path | Mount Point | Routes |
-|------------|-------------|---------|
-| `api/auth/` | `/api/auth` | `/register`, `/login` |
-| `api/tasks/` | `/api/tasks` | `/` (GET, POST), `/:id` (PUT, DELETE) |
+A full-stack to-do list application built with Express.js, Node.js, and PostgreSQL. Features user authentication with JWT tokens and full CRUD operations for tasks.
 
 ## Features
 
 ✅ **User Authentication**
 - User registration with password hashing (bcrypt)
 - Login with JWT token generation (24h expiration)
-- Token-based authentication for protected routes
+- Secure password storage
 
 ✅ **Task Management**
-- Add tasks with title, description, expiration date, and priority
+- Add new tasks with title, description, expiration date, and priority
 - Edit existing tasks
 - Delete tasks
 - View all user-specific tasks
 
-✅ **External Database Connection**
+✅ **Database**
 - Connects to external PostgreSQL database
-- No schema files - assumes tables already exist
-- All queries route to external database
+- Users table: stores username, password, and user ID
+- Tasks table: stores title, description, expiration_date, priority, and user_id
+- User-specific task isolation
 
-## Database Requirements
+## Project Structure
+
+```
+todo-app/
+├── server.js              # Main Express server
+├── package.json           # Dependencies
+├── routes/
+│   ├── auth.js           # Registration and login routes
+│   └── tasks.js          # Task CRUD routes
+├── middleware/
+│   └── auth.js           # JWT authentication middleware
+└── public/
+    ├── index.html        # Frontend HTML
+    └── app.js            # Frontend JavaScript
+```
+
+## Prerequisites
+
+- Node.js (v14 or higher)
+- PostgreSQL database (local or remote)
+- Database tables (see Database Setup below)
+
+## Database Setup
 
 **This application requires an external PostgreSQL database with the following tables:**
 
@@ -77,52 +73,42 @@ CREATE TABLE tasks (
 CREATE INDEX idx_tasks_user_id ON tasks(user_id);
 ```
 
-**Note:** You must create these tables in your PostgreSQL database before running the application.
+**Important:** You must create these tables in your PostgreSQL database before running the application.
 
-## Installation & Setup
+## Installation
 
-### 1. Prerequisites
-
-- Node.js (v14 or higher)
-- PostgreSQL database (local or remote)
-- Database tables created (see Database Requirements above)
-
-### 2. Install Dependencies
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure Database Connection
+### 2. Configure Database Connection
 
-**Option A: Edit server.js directly**
-
-Open `server.js` and update the Pool configuration:
+Edit `server.js` and update the database connection details:
 
 ```javascript
 const pool = new Pool({
   user: 'your_db_user',
-  host: 'your_db_host',        // e.g., 'localhost' or 'db.example.com'
+  host: 'your_db_host',        // e.g., 'localhost'
   database: 'your_db_name',
   password: 'your_db_password',
   port: 5432,
 });
 ```
 
-**Option B: Use environment variables (recommended)**
+Or use environment variables:
 
 ```bash
 export DB_USER=your_db_user
-export DB_HOST=your_db_host
-export DB_NAME=your_db_name
-export DB_PASSWORD=your_db_password
+export DB_HOST=localhost
+export DB_NAME=todo_app
+export DB_PASSWORD=your_password
 export DB_PORT=5432
-export JWT_SECRET=your_secret_key_here
+export JWT_SECRET=your_secret_key
 ```
 
-Or create a `.env` file and use a package like `dotenv`.
-
-### 4. Start the Application
+### 3. Start the Application
 
 ```bash
 # Production
@@ -134,14 +120,14 @@ npm run dev
 
 The application will be available at: **http://localhost:3000**
 
-## API Documentation
+## API Endpoints
 
-### Authentication Routes (`/api/auth`)
+### Authentication
 
 #### POST /api/auth/register
 Register a new user.
 
-**Request:**
+**Request Body:**
 ```json
 {
   "username": "john_doe",
@@ -162,9 +148,9 @@ Register a new user.
 ```
 
 #### POST /api/auth/login
-Login user and receive JWT token.
+Login and receive JWT token.
 
-**Request:**
+**Request Body:**
 ```json
 {
   "username": "john_doe",
@@ -184,15 +170,15 @@ Login user and receive JWT token.
 }
 ```
 
-### Task Routes (`/api/tasks`)
+### Tasks
 
-**All task routes require JWT authentication:**
+**All task endpoints require JWT authentication:**
 ```
 Authorization: Bearer <your_jwt_token>
 ```
 
 #### GET /api/tasks
-Get all tasks for authenticated user.
+Get all tasks for the authenticated user.
 
 **Response (200):**
 ```json
@@ -213,9 +199,9 @@ Get all tasks for authenticated user.
 ```
 
 #### POST /api/tasks
-Create a new task.
+Add a new task.
 
-**Request:**
+**Request Body:**
 ```json
 {
   "title": "Complete project",
@@ -234,9 +220,9 @@ Create a new task.
 ```
 
 #### PUT /api/tasks/:id
-Update an existing task.
+Edit/update an existing task.
 
-**Request:**
+**Request Body:**
 ```json
 {
   "title": "Updated title",
@@ -267,25 +253,26 @@ Delete a task.
 
 ## Usage
 
-1. **Register**: Create a new account with username and password
-2. **Login**: Login to receive a JWT token (stored in localStorage)
-3. **Add Tasks**: Create tasks with title, description, date, and priority
-4. **Manage Tasks**: Edit or delete your tasks
-5. **Logout**: Clear authentication and return to login screen
+1. **Register**: Create a new account
+2. **Login**: Login to receive a JWT token
+3. **Add Tasks**: Create tasks with title, description, expiration date, and priority
+4. **Edit Tasks**: Update existing tasks
+5. **Delete Tasks**: Remove tasks
+6. **Logout**: Clear authentication
 
-## Tech Stack
+## Technology Stack
 
-- **Backend:** Node.js, Express.js
-- **Database:** PostgreSQL (external)
-- **Authentication:** JWT (JSON Web Tokens)
-- **Password Security:** bcrypt
-- **Frontend:** Vanilla JavaScript, HTML5, CSS3
+- **Backend**: Node.js, Express.js
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Security**: bcrypt
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
 
 ## Security Features
 
 - Password hashing with bcrypt (10 salt rounds)
 - JWT token authentication (24h expiration)
-- Protected routes with middleware
+- Protected routes with authentication middleware
 - SQL injection prevention (parameterized queries)
 - User isolation (users can only access their own tasks)
 - Input validation on all endpoints
@@ -300,41 +287,36 @@ Delete a task.
 | `DB_NAME` | Database name | `todo_app` |
 | `DB_PASSWORD` | Database password | `postgres` |
 | `DB_PORT` | Database port | `5432` |
-| `JWT_SECRET` | JWT signing key | `your_jwt_secret_key_change_in_production` |
+| `JWT_SECRET` | JWT signing secret | `your_jwt_secret_key_change_in_production` |
 
 ## Troubleshooting
 
 ### Database Connection Errors
 
-**Error:** `connection refused`
-- Ensure PostgreSQL is running
-- Verify host, port, and credentials in `server.js`
-- Check firewall settings if connecting to remote database
-
-**Error:** `relation "users" does not exist`
-- Create the required tables in your database (see Database Requirements)
+- Verify PostgreSQL is running
+- Check database credentials in `server.js`
+- Ensure the database exists and tables are created
+- Check firewall settings for remote databases
 
 ### Authentication Issues
 
-**Error:** `Invalid or expired token`
-- Token expires after 24 hours - login again
+- JWT tokens expire after 24 hours
 - Ensure token is sent in Authorization header: `Bearer <token>`
+- Check JWT_SECRET matches in `middleware/auth.js` and `routes/auth.js`
 
-### Port Already in Use
+### Table Does Not Exist
 
-Change the port in `server.js` or use environment variable:
-```bash
-export PORT=3001
-npm start
-```
+- Create the users and tasks tables in your database
+- Use the SQL commands provided in the Database Setup section
 
 ## Notes
 
-- This application connects to an **external database** - no schema files included
-- Database tables must be created **before** running the application
-- JWT secret should be changed in production and stored securely
-- Frontend stores JWT token in localStorage
-- All API routes are prefixed with `/api`
+- This application connects to an external PostgreSQL database
+- No schema files included - tables must be created manually
+- JWT tokens are stored in localStorage on the frontend
+- Change JWT_SECRET in production
+- All passwords are hashed before storage
+- Tasks are user-specific and isolated
 
 ## License
 
