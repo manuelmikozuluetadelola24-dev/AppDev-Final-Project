@@ -15,7 +15,7 @@ app.use('/auth', authRoute);
 app.use('/migrate', migrateRoute);
 
 app.get('/', (res, req) => {
-	res.status(200);
+	res.status(200).send('ok');
 })
 
 app.use((req, res, next) => {
