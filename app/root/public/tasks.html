@@ -557,14 +557,18 @@
         // Load tasks
         async function loadTasks() {
             try {
+                console.log('Loading tasks from /api/tasks');
                 const response = await fetch('/api/tasks', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
+                console.log('Response status:', response.status);
+
                 if (!response.ok) {
                     if (response.status === 401 || response.status === 403) {
+                        console.log('Unauthorized - redirecting to login');
                         localStorage.clear();
                         window.location.href = 'index.html';
                         return;
@@ -573,8 +577,11 @@
                 }
 
                 const data = await response.json();
+                console.log('Tasks data:', data);
+                
                 displayTasks(data.data.tasks, data.data.count);
             } catch (error) {
+                console.error('Error loading tasks:', error);
                 showMessage(document.getElementById('tasksMessage'), 'Error loading tasks', 'error');
             }
         }
@@ -606,7 +613,7 @@
                     </div>
                     ${task.description ? `<div class="task-description">${escapeHtml(task.description)}</div>` : ''}
                     <div class="task-actions">
-                        <button class="edit-btn" onclick="editTask(${task.id}, '${escapeHtml(task.title)}', '${escapeHtml(task.description || '')}', '${task.priority}')">Edit</button>
+                        <button class="edit-btn" onclick="editTask(${task.id}, '${escapeHtml(task.title).replace(/'/g, "\\'")}', '${escapeHtml(task.description || '').replace(/'/g, "\\'")}', '${task.priority}')">Edit</button>
                         <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
                     </div>
                 </div>
@@ -617,8 +624,8 @@
         document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const title = document.getElementById('taskTitle').value;
-            const description = document.getElementById('taskDescription').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
             const priority = document.getElementById('taskPriority').value;
 
             const addTaskBtn = document.getElementById('addTaskBtn');
@@ -626,6 +633,7 @@
             addTaskBtn.textContent = 'Adding...';
 
             try {
+                console.log('Creating task with:', { title, description, priority });
                 const response = await fetch('/api/tasks', {
                     method: 'POST',
                     headers: {
@@ -635,7 +643,9 @@
                     body: JSON.stringify({ title, description, priority })
                 });
 
+                console.log('Create response status:', response.status);
                 const data = await response.json();
+                console.log('Create response data:', data);
 
                 if (response.ok) {
                     showMessage(document.getElementById('formMessage'), 'Task created successfully!', 'success');
@@ -645,6 +655,7 @@
                     showMessage(document.getElementById('formMessage'), data.message || 'Failed to create task', 'error');
                 }
             } catch (error) {
+                console.error('Error creating task:', error);
                 showMessage(document.getElementById('formMessage'), 'Network error', 'error');
             } finally {
                 addTaskBtn.disabled = false;
@@ -670,11 +681,12 @@
             e.preventDefault();
 
             const id = document.getElementById('editTaskId').value;
-            const title = document.getElementById('editTaskTitle').value;
-            const description = document.getElementById('editTaskDescription').value;
+            const title = document.getElementById('editTaskTitle').value.trim();
+            const description = document.getElementById('editTaskDescription').value.trim();
             const priority = document.getElementById('editTaskPriority').value;
 
             try {
+                console.log('Updating task:', id, { title, description, priority });
                 const response = await fetch(`/api/tasks/${id}`, {
                     method: 'PUT',
                     headers: {
@@ -696,6 +708,7 @@
                     showMessage(document.getElementById('modalMessage'), data.message || 'Update failed', 'error');
                 }
             } catch (error) {
+                console.error('Error updating task:', error);
                 showMessage(document.getElementById('modalMessage'), 'Network error', 'error');
             }
         });
@@ -707,6 +720,7 @@
             }
 
             try {
+                console.log('Deleting task:', id);
                 const response = await fetch(`/api/tasks/${id}`, {
                     method: 'DELETE',
                     headers: {
@@ -721,6 +735,7 @@
                     showMessage(document.getElementById('tasksMessage'), 'Failed to delete task', 'error');
                 }
             } catch (error) {
+                console.error('Error deleting task:', error);
                 showMessage(document.getElementById('tasksMessage'), 'Network error', 'error');
             }
         }

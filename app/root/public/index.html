@@ -140,13 +140,6 @@
             display: block;
         }
 
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            color: #999;
-            font-size: 14px;
-        }
-
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -244,14 +237,19 @@
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('loginUsername').value;
+            const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showMessage(loginMessage, 'Please enter username and password', 'error');
+                return;
+            }
 
             loginBtn.disabled = true;
             loginBtn.textContent = 'Logging in...';
 
             try {
-                const response = await fetch('/user/login', {
+                const response = await fetch('/auth/user/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -278,6 +276,7 @@
                     loginBtn.textContent = 'Login';
                 }
             } catch (error) {
+                console.error('Login error:', error);
                 showMessage(loginMessage, 'Network error. Please try again.', 'error');
                 loginBtn.disabled = false;
                 loginBtn.textContent = 'Login';
@@ -288,19 +287,28 @@
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('registerUsername').value;
+            const username = document.getElementById('registerUsername').value.trim();
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
-            // Validate password match
-            if (password !== confirmPassword) {
-                showMessage(registerMessage, 'Passwords do not match', 'error');
+            // Validation
+            if (!username || !password) {
+                showMessage(registerMessage, 'Please fill in all fields', 'error');
                 return;
             }
 
-            // Validate password length
+            if (username.length < 3) {
+                showMessage(registerMessage, 'Username must be at least 3 characters', 'error');
+                return;
+            }
+
             if (password.length < 6) {
                 showMessage(registerMessage, 'Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage(registerMessage, 'Passwords do not match', 'error');
                 return;
             }
 
@@ -308,7 +316,10 @@
             registerBtn.textContent = 'Registering...';
 
             try {
-                const response = await fetch('/user/register', {
+                console.log('Sending registration request to /auth/user/register');
+                console.log('Username:', username);
+
+                const response = await fetch('/auth/user/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -316,7 +327,9 @@
                     body: JSON.stringify({ username, password })
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
 
                 if (response.ok && data.status === 'success') {
                     // Store token and user data
@@ -325,6 +338,9 @@
                     localStorage.setItem('username', data.data.user.username);
 
                     showMessage(registerMessage, 'Registration successful! Redirecting...', 'success');
+                    
+                    // Clear form
+                    registerForm.reset();
                     
                     setTimeout(() => {
                         window.location.href = 'tasks.html';
@@ -335,6 +351,7 @@
                     registerBtn.textContent = 'Register';
                 }
             } catch (error) {
+                console.error('Registration error:', error);
                 showMessage(registerMessage, 'Network error. Please try again.', 'error');
                 registerBtn.disabled = false;
                 registerBtn.textContent = 'Register';

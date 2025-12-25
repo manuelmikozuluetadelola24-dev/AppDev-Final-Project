@@ -1,5 +1,5 @@
 const express = require('express');
-const apiRoute = require('./routes/api_new');
+const apiRoute = require('./routes/api');
 const authRoute = require('./routes/auth');
 const middleware = require('./middleware/auth_middleware');
 const migrateRoute = require('./routes/migrate');
