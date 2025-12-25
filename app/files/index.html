@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .auth-container, .app-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .auth-forms {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .form-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .user-info span {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .task-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+
+        .task-form .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .task-form .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .tasks-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .task-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            position: relative;
+            transition: box-shadow 0.3s;
+        }
+
+        .task-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item.priority-high {
+            border-left: 4px solid #dc3545;
+        }
+
+        .task-item.priority-medium {
+            border-left: 4px solid #ffc107;
+        }
+
+        .task-item.priority-low {
+            border-left: 4px solid #28a745;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .priority-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .task-description {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .task-date {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .no-tasks {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-container">
+            <h1>📝 To-Do List Application</h1>
+            <div id="authMessage"></div>
+            
+            <div class="auth-forms">
+                <!-- Registration Form -->
+                <div class="form-section">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="regUsername">Username</label>
+                            <input type="text" id="regUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Password</label>
+                            <input type="password" id="regPassword" required>
+                        </div>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+
+                <!-- Login Form -->
+                <div class="form-section">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginUsername">Username</label>
+                            <input type="text" id="loginUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Section -->
+        <div id="appSection" class="app-container hidden">
+            <div class="user-info">
+                <span>Welcome, <span id="currentUsername"></span>!</span>
+                <button id="logoutBtn" class="btn-secondary" style="width: auto; padding: 8px 20px;">Logout</button>
+            </div>
+
+            <div id="appMessage"></div>
+
+            <!-- Add Task Form -->
+            <div class="task-form">
+                <h2>Add New Task</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Title *</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskDate">Expiration Date</label>
+                            <input type="date" id="taskDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="taskPriority">Priority *</label>
+                            <select id="taskPriority" required>
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit">Add Task</button>
+                </form>
+            </div>
+
+            <!-- Tasks List -->
+            <div>
+                <h2>My Tasks</h2>
+                <div id="tasksList" class="tasks-list">
+                    <div class="no-tasks">No tasks yet. Add your first task!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
