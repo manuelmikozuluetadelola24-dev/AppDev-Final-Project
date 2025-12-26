@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 
 class JwtService {
 	constructor() {
-		this.secret = process.env.JWT_SECRET;
-		this.expiresIn = process.env.JWT_EXPIRES_IN; //
+		this.secret = "my_super_secret_key_123";
+		this.expiresIn = "1d";
   	}
 
 	generateToken(payload) {
