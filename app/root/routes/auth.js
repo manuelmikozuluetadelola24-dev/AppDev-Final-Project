@@ -38,7 +38,7 @@ router.post('/user/register', async (req, res) => {
 			"data": {
 				"accessToken": token,
 				"user": {
-					"userId": "" + userid.userid,
+					"userId": "" + userid,
 					"username": username
 				}
 			}

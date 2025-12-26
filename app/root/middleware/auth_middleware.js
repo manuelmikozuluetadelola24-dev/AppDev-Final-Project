@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
 	const token = parts[1];
 	try {
 		let { userId } = await jwt.verifyToken(token)
-		const user = await db.query(`SELECT email from users where userid =$1`, [userId])
+		const user = await db.query(`SELECT username from users where userid =$1`, [userId])
 		if (user.rowCount > 0) {
 			req.userId = userId
 			return next()
