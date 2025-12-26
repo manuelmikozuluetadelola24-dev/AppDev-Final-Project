@@ -15,7 +15,7 @@ router.all("/", async (req, res) => {
 	await db.query(`
 		DROP TABLE IF EXISTS tasks;
 		CREATE TABLE tasks (
-			id VARCHAR(255) NOT NULL UNIQUE,
+			id VARCHAR(255) NOT NULL,
 			title VARCHAR(255) NOT NULL,
                 	description VARCHAR(512),
                 	priority VARCHAR(32) NOT NULL,
