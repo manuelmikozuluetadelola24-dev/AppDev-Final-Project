@@ -6,26 +6,26 @@ Users can log in and create tasks with a title and description, they can
 also set its priority level.
 
 ## Directory Structure
-root
+root \
 | \
 |---database \
-|   |___db.js \
+|    |___db.js \
 |---middleware \
-|   |___auth_middleware.js \
+|    |___auth_middleware.js \
 |---node_modules \
 |---package.json \
 |---package-lock.json \
 |---public \
-|   |---index.html \
-|   |___tasks.html \
+|    |---index.html \
+|    |___tasks.html \
 |---routes \
-|   |---api.js \
-|   |---auth.js \
-|   |___migrate.js \
+|    |---api.js \
+|    |---auth.js \
+|    |___migrate.js \
 |---server.js \
 |___user \
-    |___jwt \
-        |___jwt.js \
+     |___jwt \
+         |___jwt.js \
 
 ## Stack
 - Nodejs
