@@ -1,31 +1,31 @@
-const express = require('express');
-const db = require('../database/db');
+const express = require("express");
+const db = require("../database/db");
 const router = express.Router();
 
 router.all("/", async (req, res) => {
-	await db.query(`
+  await db.query(`
 		DROP TABLE IF EXISTS users;
 		CREATE TABLE users (
 		userId SERIAL PRIMARY KEY,
 		username VARCHAR(255) NOT NULL UNIQUE,
 		password VARCHAR(255) NOT NULL
 		);
-	`)
+	`);
 
-	await db.query(`
+  await db.query(`
 		DROP TABLE IF EXISTS tasks;
 		CREATE TABLE tasks (
-			id VARCHAR(255) NOT NULL UNIQUE,
+			id SERIAL PRIMARY KEY,
 			title VARCHAR(255) NOT NULL,
-                	description VARCHAR(512) NOT NULL,
+                	description TEXT,
                 	priority VARCHAR(32) NOT NULL,
-                	user_id VARCHAR(255) NOT NULL,
-                	created_at VARCHAR(255) NOT NULL,
-                	updated_at VARCHAR(255) NOT NULL
+                	user_id INTEGER NOT NULL REFERENCES users(userId),
+                	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+                	updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 			);
-		`)
-	res.status(201).json({
-		"message": "success"
-	})
-})
+		`);
+  res.status(201).json({
+    message: "success",
+  });
+});
 module.exports = router;
