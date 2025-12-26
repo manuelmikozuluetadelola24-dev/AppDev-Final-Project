@@ -17,7 +17,7 @@ router.all("/", async (req, res) => {
 		CREATE TABLE tasks (
 			id VARCHAR(255) NOT NULL UNIQUE,
 			title VARCHAR(255) NOT NULL,
-                	description VARCHAR(512) NOT NULL,
+                	description VARCHAR(512),
                 	priority VARCHAR(32) NOT NULL,
                 	user_id VARCHAR(255) NOT NULL,
                 	created_at VARCHAR(255) NOT NULL,
