@@ -26,10 +26,10 @@ router.post('/user/register', async (req, res) => {
 		VALUES( $1, $2) RETURNING userid`,
 		[ username, hashedPassword ])
 	.then(async () => {
-		const userId = await (await db.query(`SELECT userId as userid from users where username=$1`, [username])).rows[0]
+		const userid = await (await db.query(`SELECT userId as userid from users where username=$1`, [username])).rows[0].userid;
 
 		const token = await jwt.generateToken({
-			userId: userid.userid
+			userId: userid
 		})
 
 		return res.status(201).json({
@@ -68,7 +68,7 @@ router.post('/user/login', async (req, res) => {
 
 	const user = await db.query(`SELECT * FROM users where username = $1 and password = $2`, [
 		username,
-		password
+		hashedPasswordpassword
 	])
 	if( user.rowCount > 0) {
 		let { userid, username, password } = user.rows[0];
