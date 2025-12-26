@@ -7,25 +7,25 @@ also set its priority level.
 
 ## Directory Structure
 root
-|
-|---database
-|   |___db.js
-|---middleware
-|   |___auth_middleware.js
-|---node_modules
-|---package.json
-|---package-lock.json
-|---public
-|   |---index.html
-|   |___tasks.html
-|---routes
-|   |---api.js
-|   |---auth.js
-|   |___migrate.js
-|---server.js
-|___user
-    |___jwt
-        |___jwt.js
+| \
+|---database \
+|   |___db.js \
+|---middleware \
+|   |___auth_middleware.js \
+|---node_modules \
+|---package.json \
+|---package-lock.json \
+|---public \
+|   |---index.html \
+|   |___tasks.html \
+|---routes \
+|   |---api.js \
+|   |---auth.js \
+|   |___migrate.js \
+|---server.js \
+|___user \
+    |___jwt \
+        |___jwt.js \
 
 ## Stack
 - Nodejs
