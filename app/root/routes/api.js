@@ -142,7 +142,7 @@ router.post('/tasks', authenticateToken, async (req, res) => {
         // Insert task into database
         const result = await db.query(`
             INSERT INTO tasks (title, description, priority, user_id, created_at, updated_at)
-            VALUES (ROW_NUMBER(), $1, $2, $3, $4, NOW(), NOW())
+            VALUES ( $1, $2, $3, $4, NOW(), NOW())
             RETURNING id, title, description, priority, user_id as userId, created_at, updated_at
         `, [title, description || null, priority, userId]);
 
