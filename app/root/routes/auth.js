@@ -26,11 +26,10 @@ router.post('/user/register', async (req, res) => {
 		VALUES( $1, $2) RETURNING userid`,
 		[ username, hashedPassword ])
 	.then(async () => {
-		const userid = await (await db.query(`SELECT userId as userid from users where username=$1`, [username])).rows[0].userid;
+		const userRow = await db.query(`SELECT userId from users where username=$1`, [username]);
+		const actualUserId = userRow.rows[0].userid;
 
-		const token = await jwt.generateToken({
-			userId: userid
-		})
+		const token = await jwt.generateToken({ userId: actualUserId });
 
 		return res.status(201).json({
 			"status": "success",
@@ -38,7 +37,7 @@ router.post('/user/register', async (req, res) => {
 			"data": {
 				"accessToken": token,
 				"user": {
-					"userId": "" + userid.userid,
+					"userId": String(actualUserId),
 					"username": username
 				}
 			}
