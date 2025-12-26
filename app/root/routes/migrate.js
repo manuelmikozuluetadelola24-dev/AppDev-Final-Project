@@ -15,13 +15,13 @@ router.all("/", async (req, res) => {
 	await db.query(`
 		DROP TABLE IF EXISTS tasks;
 		CREATE TABLE tasks (
-			id VARCHAR(255) NOT NULL UNIQUE,
+			id SERIAL PRIMARY KEY,
 			title VARCHAR(255) NOT NULL,
-                	description VARCHAR(512) NOT NULL,
-                	priority VARCHAR(32) NOT NULL,
-                	user_id VARCHAR(255) NOT NULL,
-                	created_at VARCHAR(255) NOT NULL,
-                	updated_at VARCHAR(255) NOT NULL
+		    description TEXT,
+		    priority VARCHAR(32) NOT NULL,
+		    user_id INTEGER NOT NULL REFERENCES users(userId),
+		    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+		    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 			);
 		`)
 	res.status(201).json({
