@@ -7,7 +7,7 @@ const crypto = require('crypto');
 router.post('/user/register', async (req, res) => {
 	const { username, password } = req.body;
 	
-	let hashedPassword = crypto.createHash('md5').update(password).digest('hex')
+	let hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 
 	const result = await db.query(
 		'SELECT username FROM users WHERE username = $1',
@@ -68,7 +68,7 @@ router.post('/user/login', async (req, res) => {
 
 	const user = await db.query(`SELECT * FROM users where username = $1 and password = $2`, [
 		username,
-		hashedPasswordpassword
+		hashedPassword
 	])
 	if( user.rowCount > 0) {
 		let { userid, username, password } = user.rows[0];
